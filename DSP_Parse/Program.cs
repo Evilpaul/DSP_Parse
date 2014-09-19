@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Text;
 using System.Windows.Forms;
 using System.Collections.Generic;
@@ -12,43 +13,60 @@ namespace DSP_Parse
 
 		static void Main(string[] args)
 		{
-			// If your RTF file isn't in the same folder as the .exe file for the project,  
-			// specify the path to the file in the following assignment statement.  
-			string path = @"test.rtf";
-
-			//Create the RichTextBox. (Requires a reference to System.Windows.Forms.)
-			System.Windows.Forms.RichTextBox rtBox = new System.Windows.Forms.RichTextBox();
-
-			// Get the contents of the RTF file. When the contents of the file are   
-			// stored in the string (rtfText), the contents are encoded as UTF-16.  
-			string rtfText = System.IO.File.ReadAllText(path);
-
-			// Use the RichTextBox to convert the RTF code to plain text.
-			rtBox.Rtf = rtfText;
-
-			foreach (string line in rtBox.Lines)
+			// Check for correct arguments
+			if (args.Length != 2)
 			{
-				string the_line = line.Trim();
-				if (the_line.EndsWith("*/"))
-				{
-					if (commandCount > 0)
-					{
-						endBlock();
-					}
-					parsedLines.Add("DSPMainData" + commandCount + " = {");
-					commandCount++;
-
-					// remove comment from line
-					the_line = the_line.Remove(the_line.IndexOf("/*")).Trim();
-				}
-
-				if(!String.IsNullOrWhiteSpace(the_line))
-				{
-					parsedLines.Add(the_line);
-				}
+				Console.WriteLine("Usage: " + System.AppDomain.CurrentDomain.FriendlyName + " <arrayName> <input file>");
+				return;
 			}
 
-			endBlock();
+			try
+			{
+				if (File.Exists(args[1]))
+				{
+					//Create the RichTextBox. (Requires a reference to System.Windows.Forms.)
+					System.Windows.Forms.RichTextBox rtBox = new System.Windows.Forms.RichTextBox();
+
+					// Get the contents of the RTF file. When the contents of the file are   
+					// stored in the string (rtfText), the contents are encoded as UTF-16.  
+					string rtfText = System.IO.File.ReadAllText(args[1]);
+
+					// Use the RichTextBox to convert the RTF code to plain text.
+					rtBox.Rtf = rtfText;
+
+					foreach (string line in rtBox.Lines)
+					{
+						string the_line = line.Trim();
+						if (the_line.EndsWith("*/"))
+						{
+							if (commandCount > 0)
+							{
+								endBlock();
+							}
+							parsedLines.Add(args[0] + commandCount + " = {");
+							commandCount++;
+
+							// remove comment from line
+							the_line = the_line.Remove(the_line.IndexOf("/*")).Trim();
+						}
+
+						if(!String.IsNullOrWhiteSpace(the_line))
+						{
+							parsedLines.Add(the_line);
+						}
+					}
+
+					endBlock();
+				}
+				else
+				{
+					Console.WriteLine("File does not exist");
+				}
+			}
+			catch (Exception e)
+			{
+				Console.WriteLine("The process failed: {0}", e.ToString());
+			}
 		}
 
 		static void endBlock()
