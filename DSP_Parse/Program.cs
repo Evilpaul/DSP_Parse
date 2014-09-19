@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Text;
 using System.Windows.Forms;
+using System.Collections.Generic;
 
 namespace DSP_Parse
 {
 	class Program
 	{
 		static private int commandCount = 0;
+		static private List<string> parsedLines = new List<string>();
 
 		static void Main(string[] args)
 		{
@@ -26,27 +28,49 @@ namespace DSP_Parse
 
 			foreach (string line in rtBox.Lines)
 			{
-				string parsed_line = line.Trim();
-				if (parsed_line.EndsWith("*/"))
+				string the_line = line.Trim();
+				if (the_line.EndsWith("*/"))
 				{
 					if (commandCount > 0)
 					{
-						// remove trailing comma from last command
-
-						Console.WriteLine("};");
-						Console.WriteLine("");
+						endBlock();
 					}
-					Console.WriteLine("DSPMainData" + commandCount + " = {");
+					parsedLines.Add("DSPMainData" + commandCount + " = {");
 					commandCount++;
 
 					// remove comment from line
+					the_line = the_line.Remove(the_line.IndexOf("/*")).Trim();
 				}
 
-				if(!String.IsNullOrWhiteSpace(parsed_line))
+				if(!String.IsNullOrWhiteSpace(the_line))
 				{
-					Console.WriteLine(parsed_line);
+					parsedLines.Add(the_line);
 				}
 			}
+
+			endBlock();
+		}
+
+		static void endBlock()
+		{
+			// Remove the end comma from the last data line
+			for (int i = parsedLines.Count - 1; i > 0; i--)
+			{
+				if (parsedLines[i].EndsWith(","))
+				{
+					parsedLines[i] = parsedLines[i].TrimEnd(',');
+					break;
+				}
+			}
+			parsedLines.Add("};");
+			parsedLines.Add("");
+
+			foreach (string out_line in parsedLines)
+			{
+				Console.WriteLine(out_line);
+			}
+
+			parsedLines = new List<string>();
 		}
 	}
 }
