@@ -6,6 +6,8 @@ namespace DSP_Parse
 {
 	class Program
 	{
+		static private int commandCount = 0;
+
 		static void Main(string[] args)
 		{
 			// If your RTF file isn't in the same folder as the .exe file for the project,  
@@ -24,7 +26,26 @@ namespace DSP_Parse
 
 			foreach (string line in rtBox.Lines)
 			{
-				Console.WriteLine(line);
+				string parsed_line = line.Trim();
+				if (parsed_line.EndsWith("*/"))
+				{
+					if (commandCount > 0)
+					{
+						// remove trailing comma from last command
+
+						Console.WriteLine("};");
+						Console.WriteLine("");
+					}
+					Console.WriteLine("DSPMainData" + commandCount + " = {");
+					commandCount++;
+
+					// remove comment from line
+				}
+
+				if(!String.IsNullOrWhiteSpace(parsed_line))
+				{
+					Console.WriteLine(parsed_line);
+				}
 			}
 		}
 	}
