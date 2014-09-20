@@ -20,6 +20,13 @@ namespace DSP_Parse
 				return;
 			}
 
+			// Check that array name does not contain spaces
+			if (args[0].Contains(" "))
+			{
+				Console.WriteLine("Invalid array name");
+				return;
+			}
+
 			try
 			{
 				if (File.Exists(args[1]))
