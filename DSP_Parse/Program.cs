@@ -32,7 +32,7 @@ namespace DSP_Parse
 			{
 				if (File.Exists(args[1]))
 				{
-					Console.WriteLine("/* Data generated " + DateTime.Now.ToString("G") + " from " + args[1] + " */");
+					Console.WriteLine("/* Data generated " + DateTime.Now.ToString("G") + " from \"" + args[1] + "\" */");
 
 					//Create the RichTextBox. (Requires a reference to System.Windows.Forms.)
 					System.Windows.Forms.RichTextBox rtBox = new System.Windows.Forms.RichTextBox();
