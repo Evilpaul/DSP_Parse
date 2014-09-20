@@ -3,6 +3,7 @@ using System.IO;
 using System.Text;
 using System.Windows.Forms;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 
 namespace DSP_Parse
 {
@@ -20,8 +21,8 @@ namespace DSP_Parse
 				return;
 			}
 
-			// Check that array name does not contain spaces
-			if (args[0].Contains(" "))
+			// Check that array name is valid
+			if ((args[0].Contains(" ")) || (Regex.IsMatch(args[0], @"^\d")))
 			{
 				Console.WriteLine("Invalid array name");
 				return;
