@@ -53,7 +53,7 @@ namespace DSP_Parse
 							{
 								endBlock();
 							}
-							parsedLines.Add(args[0] + commandCount + " = {");
+							parsedLines.Add("static const uint8 " + args[0] + commandCount + "[] = {");
 							commandCount++;
 
 							// remove comment from line
