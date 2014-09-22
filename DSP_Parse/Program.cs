@@ -53,6 +53,10 @@ namespace DSP_Parse
 							{
 								endBlock();
 							}
+
+							// add the comment above the array
+							parsedLines.Add(the_line.Substring(the_line.IndexOf("/*")));
+
 							parsedLines.Add("static const uint8 " + args[0] + commandCount + "[] = {");
 							commandCount++;
 
