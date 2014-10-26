@@ -15,9 +15,10 @@ namespace DSP_Parse
 		static void Main(string[] args)
 		{
 			// Check for correct arguments
-			if (args.Length != 2)
+			if ((args.Length < 2) || (args.Length > 3))
 			{
-				Console.WriteLine("Usage: " + System.AppDomain.CurrentDomain.FriendlyName + " <arrayName> <input file>");
+				Console.WriteLine("Usage: " + System.AppDomain.CurrentDomain.FriendlyName + " <arrayName> <input file> [address byte]");
+				Console.WriteLine(args.Length);
 				return;
 			}
 
@@ -59,6 +60,13 @@ namespace DSP_Parse
 
 							parsedLines.Add("static const uint8 " + args[0] + commandCount + "[] = {");
 							commandCount++;
+
+							// add address to start of data
+							if (args.Length == 3)
+							{
+								string temp_str = args[2] + ", ";
+								the_line = string.Concat(temp_str, the_line);
+							}
 
 							// remove comment from line
 							the_line = the_line.Remove(the_line.IndexOf("/*")).Trim();
