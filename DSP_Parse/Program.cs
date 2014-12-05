@@ -17,13 +17,13 @@ namespace DSP_Parse
 			// Check for correct arguments
 			if ((args.Length < 2) || (args.Length > 3))
 			{
-				Console.WriteLine("Usage: " + System.AppDomain.CurrentDomain.FriendlyName + " <arrayName> <input file> [address byte]");
+				Console.WriteLine("Usage: " + System.AppDomain.CurrentDomain.FriendlyName + " <input file> <arrayName> [address byte]");
 				Console.WriteLine(args.Length);
 				return;
 			}
 
 			// Check that array name is valid
-			if ((args[0].Contains(" ")) || (Regex.IsMatch(args[0], @"^\d")))
+			if ((args[1].Contains(" ")) || (Regex.IsMatch(args[1], @"^\d")))
 			{
 				Console.WriteLine("Invalid array name");
 				return;
@@ -31,16 +31,16 @@ namespace DSP_Parse
 
 			try
 			{
-				if (File.Exists(args[1]))
+				if (File.Exists(args[0]))
 				{
-					Console.WriteLine("/* Data generated " + DateTime.Now.ToString("G") + " from \"" + args[1] + "\" */");
+					Console.WriteLine("/* Data generated " + DateTime.Now.ToString("G") + " from \"" + args[0] + "\" */");
 
 					//Create the RichTextBox. (Requires a reference to System.Windows.Forms.)
 					System.Windows.Forms.RichTextBox rtBox = new System.Windows.Forms.RichTextBox();
 
 					// Get the contents of the RTF file. When the contents of the file are   
 					// stored in the string (rtfText), the contents are encoded as UTF-16.  
-					string rtfText = System.IO.File.ReadAllText(args[1]);
+					string rtfText = System.IO.File.ReadAllText(args[0]);
 
 					// Use the RichTextBox to convert the RTF code to plain text.
 					rtBox.Rtf = rtfText;
@@ -58,7 +58,7 @@ namespace DSP_Parse
 							// add the comment above the array
 							parsedLines.Add(the_line.Substring(the_line.IndexOf("/*")));
 
-							parsedLines.Add("static const uint8 " + args[0] + commandCount + "[] = {");
+							parsedLines.Add("static const uint8 " + args[1] + commandCount + "[] = {");
 							commandCount++;
 
 							// add address to start of data
